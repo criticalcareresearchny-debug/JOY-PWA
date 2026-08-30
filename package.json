@@ -1,0 +1,11 @@
+{
+  "name": "joy-relay-launcher",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node relay-server/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
