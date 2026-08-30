@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070817">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JOY">
+  <meta name="description" content="JOY — private partner connectivity and compatible device control.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>JOY</title>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><span></span><span></span><span></span><span></span><span></span></div>
+      <div><div class="brand-name">JOY</div><div class="brand-sub">Connect. Control. Together.</div></div>
+    </div>
+    <div id="globalStatus" class="pill muted"><span class="dot"></span><span>Disconnected</span></div>
+  </header>
+
+  <main>
+    <section class="view active" data-view="home">
+      <div class="hero-grid">
+        <article class="card device-card">
+          <div class="eyebrow">CONNECTED DEVICE</div>
+          <div class="device-hero">
+            <div>
+              <h1 id="homeDeviceName">No device connected</h1>
+              <p id="homeProfile">Connect a compatible device to unlock controls.</p>
+              <div class="mini-status-row">
+                <span id="homeCompat" class="mini-pill">Waiting</span>
+                <span id="homeBattery" class="mini-pill hidden">Battery —</span>
+              </div>
+            </div>
+            <div class="device-art" aria-hidden="true">
+              <div class="ring r1"></div><div class="ring r2"></div><div class="device-orb">∿</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card intensity-card">
+          <div class="eyebrow">MASTER INTENSITY</div>
+          <div class="dial-wrap">
+            <div id="dial" class="dial">
+              <div class="dial-inner"><strong id="masterValue">0%</strong><span>Intensity</span></div>
+            </div>
+          </div>
+          <input id="masterSlider" class="range" type="range" min="0" max="100" value="0" disabled>
+          <button id="stopAllBtn" class="btn danger wide" disabled>■ STOP ALL</button>
+        </article>
+      </div>
+
+      <article class="card" id="dynamicControlsCard">
+        <div class="section-head">
+          <div><div class="eyebrow">DEVICE CONTROLS</div><h2>Adaptive controls</h2></div>
+          <span id="profileBadge" class="mini-pill">No profile</span>
+        </div>
+        <div id="dynamicControls" class="empty-state">
+          JOY builds this area from the connected device profile.
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="section-head">
+          <div><div class="eyebrow">QUICK PATTERNS</div><h2>Rhythm library</h2></div>
+        </div>
+        <div id="patterns" class="pattern-grid"></div>
+      </article>
+    </section>
+
+    <section class="view" data-view="devices">
+      <article class="card">
+        <div class="section-head">
+          <div><div class="eyebrow">DEVICES</div><h2>Find your device</h2></div>
+          <span id="bridgeBadge" class="mini-pill">Checking Bluetooth…</span>
+        </div>
+        <p class="muted-text">Known profiles are verified before control commands are enabled. On iPhone, direct BLE requires a Web Bluetooth bridge/browser or the future JOY native bridge.</p>
+        <div class="button-row">
+          <button id="findDeviceBtn" class="btn primary">⌁ Find device</button>
+          <button id="disconnectBtn" class="btn secondary" disabled>Disconnect</button>
+        </div>
+      </article>
+
+      <article id="selectedDeviceCard" class="card hidden">
+        <div class="eyebrow">SELECTED DEVICE</div>
+        <h2 id="selectedDeviceName">—</h2>
+        <p id="selectedDeviceStatus" class="muted-text">—</p>
+        <div id="selectedCapabilities" class="chip-row"></div>
+      </article>
+
+      <article class="card">
+        <div class="eyebrow">COMPATIBILITY CLOUD</div>
+        <h2>Profile Schema v3</h2>
+        <p class="muted-text">JOY loads validated device profiles without downloading executable Bluetooth code. The web client currently includes the verified GGL-compatible 20-byte driver.</p>
+        <div class="stat-grid">
+          <div class="stat"><strong id="profileCount">1</strong><span>profiles</span></div>
+          <div class="stat"><strong>3</strong><span>schema</span></div>
+          <div class="stat"><strong id="bleSupportStat">—</strong><span>BLE bridge</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="view" data-view="partner">
+      <article class="card">
+        <div class="eyebrow">PARTNER SESSION</div>
+        <h2>Connect privately</h2>
+        <p id="sessionStatus" class="muted-text">No active session.</p>
+        <label class="field-label">JOY relay HTTPS address</label>
+        <input id="relayUrl" class="text-input" type="url" placeholder="https://your-relay.example">
+        <div class="button-row">
+          <button id="testRelayBtn" class="btn secondary">Test relay</button>
+          <span id="relayStatus" class="mini-pill">Not configured</span>
+        </div>
+      </article>
+
+      <div class="two-col">
+        <article class="card">
+          <div class="eyebrow">OWNER</div>
+          <h2>Create invite</h2>
+          <button id="createInviteBtn" class="btn primary wide">Create secure invite</button>
+          <textarea id="inviteOutput" class="text-area" readonly placeholder="Secure invite appears here"></textarea>
+          <button id="copyInviteBtn" class="btn secondary wide">Copy invite</button>
+        </article>
+        <article class="card">
+          <div class="eyebrow">PARTNER</div>
+          <h2>Join session</h2>
+          <textarea id="inviteInput" class="text-area" placeholder="Paste JOY1:… invite"></textarea>
+          <button id="joinInviteBtn" class="btn primary wide">Join secure session</button>
+        </article>
+      </div>
+
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">PERMISSIONS</div><h2>Owner controls</h2></div></div>
+        <div class="toggle-grid">
+          <label class="toggle"><input id="allowControl" type="checkbox" checked><span></span><b>Remote control</b></label>
+          <label class="toggle"><input id="allowText" type="checkbox" checked><span></span><b>Private text</b></label>
+          <label class="toggle"><input id="allowAudio" type="checkbox" checked><span></span><b>Talk / PTT</b></label>
+          <label class="toggle"><input id="allowVideo" type="checkbox"><span></span><b>Video</b></label>
+        </div>
+      </article>
+
+      <div class="two-col">
+        <article class="card">
+          <div class="eyebrow">REMOTE CONTROL</div>
+          <h2>Partner controls</h2>
+          <input id="remoteMaster" class="range" type="range" min="0" max="100" value="0">
+          <div class="button-row">
+            <button id="remoteWaveBtn" class="btn primary">∿ Wave</button>
+            <button id="remoteStopBtn" class="btn danger">■ Stop</button>
+          </div>
+          <p class="muted-text">Commands are encrypted before they are sent through the relay.</p>
+        </article>
+        <article class="card">
+          <div class="eyebrow">PRIVATE COMMUNICATION</div>
+          <h2>Talk & video</h2>
+          <div class="button-grid">
+            <button id="talkBtn" class="btn blue">☎ Talk</button>
+            <button id="pttBtn" class="btn purple">◉ Push-to-talk</button>
+            <button id="videoBtn" class="btn primary">▣ Video</button>
+          </div>
+          <div id="incomingCall" class="incoming hidden">
+            <b id="incomingTitle">Incoming call</b>
+            <div class="button-row"><button id="acceptCallBtn" class="btn primary">Accept</button><button id="declineCallBtn" class="btn secondary">Decline</button></div>
+          </div>
+        </article>
+      </div>
+
+      <article class="card">
+        <div class="eyebrow">PRIVATE TEXT</div>
+        <div id="messageList" class="messages"><div class="empty-state">Messages will appear here.</div></div>
+        <div class="message-compose">
+          <input id="messageInput" class="text-input" placeholder="Write a message">
+          <button id="sendMessageBtn" class="btn primary">Send</button>
+        </div>
+      </article>
+
+      <button id="endSessionBtn" class="btn danger wide">End & revoke session</button>
+    </section>
+
+    <section class="view" data-view="media">
+      <div class="two-col">
+        <article class="card">
+          <div class="eyebrow">MUSIC SYNC</div>
+          <h2>Move with the music</h2>
+          <p class="muted-text">Choose an audio file. JOY analyzes live energy and maps it to device intensity while playback is active.</p>
+          <input id="musicFile" class="file-input" type="file" accept="audio/*">
+          <audio id="musicPlayer" controls></audio>
+          <label class="field-label">Sensitivity <span id="musicSensitivityLabel">60%</span></label>
+          <input id="musicSensitivity" class="range" type="range" min="10" max="100" value="60">
+          <div class="button-row">
+            <button id="startMusicSyncBtn" class="btn primary">Start Music Sync</button>
+            <button id="stopMusicSyncBtn" class="btn secondary">Stop</button>
+          </div>
+          <div class="meter"><div id="musicMeter"></div></div>
+        </article>
+        <article class="card">
+          <div class="eyebrow">LIVE SOUND SYNC</div>
+          <h2>React to nearby sound</h2>
+          <p class="muted-text">Uses the microphone only after you start this feature. Audio is analyzed locally and is not uploaded by JOY.</p>
+          <label class="field-label">Sensitivity <span id="soundSensitivityLabel">65%</span></label>
+          <input id="soundSensitivity" class="range" type="range" min="10" max="100" value="65">
+          <div class="button-row">
+            <button id="startSoundSyncBtn" class="btn cyan">Start Live Sound</button>
+            <button id="stopSoundSyncBtn" class="btn secondary">Stop</button>
+          </div>
+          <div class="meter"><div id="soundMeter"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" data-view="diagnostics">
+      <article class="card">
+        <div class="eyebrow">WEB DEVICE LAB</div>
+        <h2>Safe diagnostics</h2>
+        <p class="muted-text">The PWA can fully control validated profiles through Web Bluetooth. Full unknown-GATT exploration remains a native-bridge capability because browsers restrict access to unapproved services.</p>
+        <div class="stat-grid">
+          <div class="stat"><strong id="diagBle">—</strong><span>Web BLE</span></div>
+          <div class="stat"><strong id="diagProfile">none</strong><span>profile</span></div>
+          <div class="stat"><strong id="diagRelay">offline</strong><span>relay</span></div>
+        </div>
+        <div class="button-row">
+          <button id="readBatteryBtn" class="btn secondary">Read battery</button>
+          <button id="copyDiagnosticsBtn" class="btn secondary">Copy diagnostics</button>
+          <button id="clearDiagnosticsBtn" class="btn secondary">Clear log</button>
+        </div>
+      </article>
+      <article class="card">
+        <div class="eyebrow">LOG</div>
+        <pre id="diagnosticLog" class="log"></pre>
+      </article>
+    </section>
+
+    <section class="view" data-view="settings">
+      <article class="card">
+        <div class="eyebrow">INSTALL JOY</div>
+        <h2>Website + app-like PWA</h2>
+        <p class="muted-text"><b>iPhone/iPad:</b> open JOY in Safari → Share → Add to Home Screen. <br><b>Android:</b> use your browser's Install/Add to Home Screen option.</p>
+        <button id="installBtn" class="btn primary hidden">Install JOY</button>
+      </article>
+      <article class="card">
+        <div class="eyebrow">PRIVACY & SECURITY</div>
+        <h2>Private by design</h2>
+        <ul class="privacy-list">
+          <li>Local Bluetooth control needs no JOY account.</li>
+          <li>Relay message/control payloads use client-side AES-GCM encryption.</li>
+          <li>Camera and microphone activate only after you start a call or sound feature.</li>
+          <li>Remote device control is independently revocable.</li>
+          <li>Unknown Bluetooth hardware remains control-locked.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <div class="eyebrow">VERSION</div>
+        <h2>JOY Web/PWA v0.1</h2>
+        <p class="muted-text">Profile Schema v3 • Android relay interoperability target • responsive phone/tablet/desktop interface.</p>
+      </article>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-target="home"><span>⌂</span><b>Home</b></button>
+    <button class="nav-btn" data-target="devices"><span>⌁</span><b>Devices</b></button>
+    <button class="nav-btn" data-target="partner"><span>♥</span><b>Partner</b></button>
+    <button class="nav-btn" data-target="media"><span>♫</span><b>Media</b></button>
+    <button class="nav-btn" data-target="diagnostics"><span>⌇</span><b>Diagnostics</b></button>
+    <button class="nav-btn" data-target="settings"><span>⚙</span><b>Settings</b></button>
+  </nav>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="callOverlay" class="call-overlay hidden">
+  <video id="remoteVideo" autoplay playsinline></video>
+  <div class="call-shade"></div>
+  <div class="call-top"><div class="brand compact"><div class="brand-mark"><span></span><span></span><span></span></div><b>JOY</b></div><div id="callStatus" class="pill">Preparing…</div></div>
+  <video id="localVideo" autoplay muted playsinline></video>
+  <div id="audioOrb" class="audio-orb hidden">◉</div>
+  <div class="call-bottom">
+    <h2 id="callTitle">Private video</h2>
+    <p id="callSubtitle">Encrypted JOY signaling</p>
+    <div class="button-row center">
+      <button id="muteCallBtn" class="btn secondary">Mute</button>
+      <button id="cameraCallBtn" class="btn purple">Camera off</button>
+      <button id="pttCallBtn" class="btn blue hidden">Hold to talk</button>
+      <button id="hangupBtn" class="btn danger">End</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

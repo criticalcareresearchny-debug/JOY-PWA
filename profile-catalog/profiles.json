@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 3,
+  "profiles": [
+    {
+      "id": "ggl-generic-v1",
+      "profileVersion": 1,
+      "displayName": "GGL-compatible 3-zone",
+      "codec": "ggl20-v1",
+      "nameHints": [
+        "DSJM",
+        "BEST AI",
+        "BEST",
+        "GGL",
+        "GGL LOVE"
+      ],
+      "serviceUuid": "0000fffe-0000-1000-8000-00805f9b34fb",
+      "writeUuid": "0000fe02-0000-1000-8000-00805f9b34fb",
+      "channels": [
+        1,
+        2,
+        5
+      ],
+      "masterChannel": 3,
+      "capabilities": {
+        "zoneCount": 3,
+        "intensitySteps": 256,
+        "independentZones": true,
+        "patterns": true,
+        "battery": false,
+        "heating": false,
+        "customModulation": true,
+        "musicSync": true,
+        "soundSync": true,
+        "remoteSessionCompatible": true,
+        "rotation": false,
+        "suction": false,
+        "thrusting": false,
+        "leds": false,
+        "sensors": false,
+        "deviceEvents": false
+      },
+      "controls": []
+    }
+  ]
+}
